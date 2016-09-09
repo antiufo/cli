@@ -434,6 +434,19 @@ namespace Microsoft.CodeAnalysis
                 }
                 consoleOutput.WriteLine(string.Format("Rewritten {0} LINQ queries in {1} methods as procedural code.", rewrittenLinqInvocations, rewrittenMethods));
 
+                var k = compilation.GetDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error).ToList();
+                if (k.Count != 0)
+                {
+                    foreach (var err in k)
+                    {
+                        System.Console.WriteLine("Could not compile rewritten method. Consider applying a [Shaman.Runtime.NoLinqRewrite] attribute."); 
+                        var m = err.Location.SourceTree.GetRoot().FindNode(err.Location.SourceSpan);
+                        System.Console.WriteLine(err.Location.SourceTree.FilePath);
+                        //var z = m.FirstAncestorOrSelf<CSharp.Syntax.BaseMethodDeclarationSyntax>(x => x.Kind() == CSharp.SyntaxKind.MethodDeclaration);
+                        //compilation.GetSemanticModel().GetEnclosingSymbol(err.Location.SourceSpan.Start)
+
+                    }
+                }
                 if (ReportErrors(compilation.GetParseDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error), consoleOutput, errorLogger))
                 {
                     return Failed;
