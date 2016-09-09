@@ -9,11 +9,11 @@
     "allowUnsafe": true,
     "compile": {
       "include": [
-        "../../CommandLine",
-        "../dotnet-compile-csc/"
+        "../../CommandLine"
       ],
-      "exclude": [
-        "**/*--"
+      "includeFiles": [
+        "../dotnet-compile-csc/AssemblyInfoOptionsCommandLine.cs",
+        "../dotnet-compile-csc/CommonCompilerOptionsCommandLine.cs"
       ]
     }
   },
