@@ -13,6 +13,7 @@ using Shaman.Runtime;
 using Microsoft.CodeAnalysis.Emit;
 using System.Threading;
 using Microsoft.CodeAnalysis.Diagnostics;
+using System.Globalization;
 
 internal static class Refl
 {
@@ -35,7 +36,7 @@ internal static class Refl
     public static Type Type_CodeAnalysisResources = Assembly_Common.GetType("Microsoft.CodeAnalysis.CodeAnalysisResources");
     public static Type Type_Compilation = Assembly_Common.GetType("Microsoft.CodeAnalysis.Compilation");
 
-    public static Type Type_DiagnosticInfo = Assembly_Common.GetType("Microsoft.CodeAnalysis.DiagnosticInfo");
+    public static Type Type_DiagnosticInfo = Assembly_Common.GetType("Microsoft.CodeAnalysis.DiagnosticInfo", true, false);
 }
 
 internal static class ReflCSharpCommandLineArguments
@@ -141,7 +142,7 @@ internal static class ReflRelativePathResolver
 internal static class ReflDiagnosticInfo
 {
     public static Func<object, int, object[], object> ctor;
-    public static Func<object, bool, int, object[], object> ctor_Overload2;
+    public static Func<object, IFormatProvider, string> ToString;
     static ReflDiagnosticInfo()
     {
         ReflectionHelper.InitializeWrapper(typeof(ReflDiagnosticInfo), Refl.Assembly_Common, "Microsoft.CodeAnalysis.DiagnosticInfo");
