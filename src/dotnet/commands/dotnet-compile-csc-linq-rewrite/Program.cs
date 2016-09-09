@@ -101,11 +101,11 @@ namespace Microsoft.DotNet.Tools.Compiler.Csc
             }
             catch (Exception ex)
             {
-#if DEBUG
+//#if DEBUG
                 Reporter.Error.WriteLine(ex.ToString());
-#else
-                Reporter.Error.WriteLine(ex.Message);
-#endif
+//#else
+//                Reporter.Error.WriteLine(ex.Message);
+///#endif
                 return ExitFailed;
             }
         }
