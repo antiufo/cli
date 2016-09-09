@@ -27,6 +27,7 @@ using AdditionalTextFile = System.Object;
 using AnalyzerManager = System.Object;
 using AnalyzerDriver = System.Object;
 using Microsoft.CodeAnalysis.CommandLine;
+using Shaman.Roslyn.LinqRewrite;
 
 namespace Microsoft.CodeAnalysis
 {
@@ -271,7 +272,7 @@ namespace Microsoft.CodeAnalysis
 
         protected virtual void PrintError(DiagnosticInfo diagnostic, TextWriter consoleOutput)
         {
-            consoleOutput.WriteLine(diagnostic.InvokeFunction("ToString", Culture));
+            consoleOutput.WriteLine(ReflDiagnosticInfo.ToString(diagnostic, Culture));
         }
 
         public ErrorLogger2 GetErrorLogger(TextWriter consoleOutput, CancellationToken cancellationToken)
@@ -418,6 +419,32 @@ namespace Microsoft.CodeAnalysis
                 {
                     return Failed;
                 }
+                consoleOutput.WriteLine("Rewriting LINQ to procedural code..."); 
+                var originalCompilation = compilation;
+                
+                var rewrittenLinqInvocations = 0;
+                var rewrittenMethods = 0;
+                foreach (var syntaxTree in compilation.SyntaxTrees)
+                {
+                    var rewriter = new LinqRewriter(originalCompilation.GetSemanticModel(syntaxTree));
+                    var rewritten = rewriter.Visit(syntaxTree.GetRoot());
+                    compilation = compilation.ReplaceSyntaxTree(syntaxTree, rewritten.SyntaxTree);
+                    rewrittenLinqInvocations += rewriter.RewrittenLinqQueries;
+                    rewrittenMethods += rewriter.RewrittenMethods;
+                }
+                consoleOutput.WriteLine(string.Format("Rewritten {0} LINQ queries in {1} methods as procedural code.", rewrittenLinqInvocations, rewrittenMethods));
+
+                if (ReportErrors(compilation.GetParseDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error), consoleOutput, errorLogger))
+                {
+                    return Failed;
+                }
+
+                if (ReportErrors(compilation.GetDeclarationDiagnostics().Where(x => x.Severity == DiagnosticSeverity.Error), consoleOutput, errorLogger))
+                {
+                    return Failed;
+                }
+
+
 
                 EmitResult emitResult;
 

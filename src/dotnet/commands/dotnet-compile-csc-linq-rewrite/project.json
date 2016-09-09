@@ -1,5 +1,5 @@
 {
-  "version": "1.0.1.2",
+  "version": "1.0.1.5",
   "buildOptions": {
     "debugType": "portable",
     "emitEntryPoint": true,
@@ -27,7 +27,8 @@
     "Microsoft.CodeAnalysis.CSharp": "1.3.2",
     "Shaman.Reflection": "1.0.0.19",
     "Shaman.Csc": "1.3-beta-1",
-    "System.Runtime.InteropServices.RuntimeInformation": "4.0.0"
+    "System.Runtime.InteropServices.RuntimeInformation": "4.0.0",
+    "Shaman.Roslyn.LinqRewrite": "1.0.0-beta-3283"
   },
   "frameworks": {
     "netcoreapp1.0": {
